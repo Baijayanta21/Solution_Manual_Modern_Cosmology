@@ -584,7 +584,7 @@ def rho_gamma(a, T0 = 2.7255 * u.K):
 def rho_nu(a, m_nu = 0.0 * u.eV, T0 = 2.7255 * u.K):
     r'''
     Given the present day CMB temperature :math:`T_0`, it computes energy density corresponding to a single geneation neutrino
-    of mass :math:`m_{\nu_i}` and temperature :math:`T_{\nu}` at given scale factor as :
+    of mass :math:`m_{\nu}` and temperature :math:`T_{\nu}` at given scale factor as :
 
     .. math::
 
