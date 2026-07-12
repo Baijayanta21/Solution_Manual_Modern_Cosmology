@@ -645,3 +645,90 @@ plt.annotate(r'Transition', xy = (1, y[x>1][0]), xytext=(-20, 40), textcoords = 
 plt.savefig("./figs/neutrino.pdf", dpi = 700, transparent = True, bbox_inches = "tight", pad_inches = 0.1)
 plt.show()
 ####################################################################################################
+
+# #### $\text{Problem 2.13}$
+
+H0 = 67.7 * u.km / u.s / u.Mpc # Hubble parameter at present
+
+from astropy.constants import G
+
+# critical density in eV^4 units
+rho_cr = ((3*H0**2/(8*np.pi*G)).decompose()).to(u.eV**4, equivalencies = natural_density)
+
+def rho_tot(a, m_nu = 0.0 * u.eV, T0 = 2.7255 * u.K):
+    r'''
+    Given the present day CMB temperature :math:`T_0`, it computes total energy density :math:`\rho(a)` which is equal to 
+    critical density :math:`\rho_{\rm cr}` (today). This energy density is split up between cold, dark matter and single geneation neutrino
+    of mass :math:`m_{\nu}` and having temperature :math:`T_{\nu}`.
+
+    .. math::
+
+    
+        \begin{align*}
+        \rho(a) &= \rho_{c} + \rho_{\nu}
+        \Omega_c + \Omega_nu &= 1
+        \rho_c &= \Omega_c\,\rho_{\rm cr}\,a^{-3}
+        \rho_{\nu} &= \frac{T_{\nu}^4}{\pi^2}\,\int_{0}^{\infty}\,\frac{x^2dx}{e^x+1}\,\sqrt{x^2 + \qty(\tfrac{m_{\nu}}{T_{\nu}})^2} 
+        \end{align*}
+        
+    Parameters
+    ----------
+    a : float 
+        Scale factor :math:`a`.
+    m_nu : float, optional
+        Neutrino mass in eV units. Default is 0.0 eV (assumed massless). 
+    T0 : float, optional
+        Present-day CMB temperature in kelvin. Default is 2.7255 K.
+        
+    Returns
+    -------
+    rho : float 
+        Total energy density as a function of scale factor (in :math:`\text{eV}^4` units).
+        
+    '''
+    # energy density corresponding to neutrino at present
+    rho_nu0  = rho_nu(1, m_nu, T0)
+
+    # obtain density parameters
+    Omega_nu = rho_nu0/rho_cr
+    Omega_c  = 1 - Omega_nu
+    
+    rho = (Omega_c * rho_cr / a**3) + rho_nu(a, m_nu, T0)
+
+    return rho
+
+T0 = 2.726 * u.K   # CMB temperature at present in kelvin units
+
+# scale factor array
+a = np.logspace(-7.5, 0.5, num = 100)   
+
+# *************************************************************
+# Case I
+m_nu1 = 0.0  * u.eV # mass of the neutrino in eV units
+
+# total energy density at different scale factors
+rho1 = u.Quantity([rho_tot(ai, m_nu1, T0) for ai in a])
+
+# *************************************************************
+# Case II
+m_nu2 = 0.06  * u.eV # mass of the neutrino in eV units
+
+# total energy density at different scale factors
+rho2 = u.Quantity([rho_tot(ai, m_nu2, T0) for ai in a])
+# *************************************************************
+
+fig = plt.figure(figsize = (7, 4))
+plt.plot(a, rho1/rho2, 'g', lw = 1.75)
+plt.xlabel(r'$a$', fontsize = 17)
+plt.ylabel(r'$\frac{\rho_{\rm I}}{\rho_{\rm II}}$', fontsize = 17, rotation = 0, labelpad = 15)
+
+plt.xscale('log')
+
+# annotate the transition points
+plt.annotate(r'Transition', xy = (4e-8, 1), xytext=(0, 40), textcoords = 'offset points', arrowprops = dict(arrowstyle = '-|>'), fontsize = 13.5, ha = 'center', va = 'center')
+plt.annotate(r'Transition', xy = (1, 1)   , xytext=(0, 40), textcoords = 'offset points', arrowprops = dict(arrowstyle = '-|>'), fontsize = 13.5, ha = 'center', va = 'center')
+
+plt.xlim(6e-9)
+plt.savefig("./figs/prob13.pdf", dpi = 700, transparent = True, bbox_inches = "tight", pad_inches = 0.1)
+plt.show()
+####################################################################################################
