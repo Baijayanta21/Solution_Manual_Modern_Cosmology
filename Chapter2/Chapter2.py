@@ -640,7 +640,7 @@ plt.yscale('log')
 
 plt.legend(loc = 'center', fontsize = 15, bbox_to_anchor = (.2,.9), fancybox = True, edgecolor = 'k')
 # annotate the equality scale factors
-plt.annotate(r'Transition',xy = (1, y[x>1][0]), xytext=(-20, 40), textcoords = 'offset points', arrowprops = dict(arrowstyle = '-|>'), fontsize = 15, ha = 'center', va = 'center')
+plt.annotate(r'Transition', xy = (1, y[x>1][0]), xytext=(-20, 40), textcoords = 'offset points', arrowprops = dict(arrowstyle = '-|>'), fontsize = 15, ha = 'center', va = 'center')
 
 plt.savefig("./figs/neutrino.pdf", dpi = 700, transparent = True, bbox_inches = "tight", pad_inches = 0.1)
 plt.show()
